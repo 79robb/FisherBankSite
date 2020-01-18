@@ -11,18 +11,11 @@ var options = {
 		maxFiles: 5,
 		colorize: false,
 	},
-	console: {
-		level: 'debug',
-		handleExceptions: true,
-		json: false,
-		colorize: true,
-	},
 };
 
 var logger = winston.createLogger({
 	transports: [
 		new winston.transports.File(options.file),
-		new winston.transports.Console(options.console)
 	],
 	exitOnError: false,
 });

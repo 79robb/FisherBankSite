@@ -1,8 +1,12 @@
 doctype html
 html
-  head
-    title= 'Fisher Bank'
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-	
-    block content
+	head
+		title= 'Fisher Bank | ' + title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		ul
+			li
+				a(href="/") Home
+			li
+				a(href="/login") Log In
+		block content

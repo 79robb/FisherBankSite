@@ -1,6 +1,47 @@
+.menulist{
+	list-style-type: none;
+	margin: 0;
+	padding: 15px 0;
+	background-color: #000a51;
+}
+
+.menuitem{
+	display: inline;
+	padding: 15px;
+	background-color: green;
+}
+
+.menuitem:hover{
+	background-color: lime;
+}
+
+.menuitem a{
+	text-decoration: none;
+}
+
+.content{
+	margin: 25px;
+}
+
+.footerlist{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	background-color: #000a51;
+}
+
+.footeritem{
+	padding: 10px;
+}
+
+.footeritem a{
+	text-decoration: none;
+}
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	background-color: #f1f1f1;
+	padding: 0;
+	margin: 0;
 }
 
 a {

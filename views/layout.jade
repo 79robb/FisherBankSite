@@ -4,9 +4,15 @@ html
 		title= 'Fisher Bank | ' + title
 		link(rel='stylesheet', href='/stylesheets/style.css')
 	body
-		ul
-			li
+		ul.menulist
+			li.menuitem
 				a(href="/") Home
-			li
+			li.menuitem
 				a(href="/login") Log In
-		block content
+		div.content
+			block content
+		ul.footerlist
+			li.footeritem
+				a(href="/") Home
+			li.footeritem
+				a(href="/login") Log In

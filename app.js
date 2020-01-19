@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 var winston = require('./config/winston');
 var helmet = require('helmet');
+var bodyParser = require('body-parser');
+var session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -15,13 +17,19 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(morgan('dev'));
 app.use(morgan('combined', { stream: winston.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -36,6 +44,8 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  
+  winston.error('${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}');
 
   // render the error page
   res.status(err.status || 500);

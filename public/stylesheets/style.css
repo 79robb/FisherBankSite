@@ -1,26 +1,48 @@
 .menulist{
 	list-style-type: none;
 	margin: 0;
-	padding: 15px 0;
+	padding: 14.5px 0;
 	background-color: #000a51;
 }
 
 .menuitem{
 	display: inline;
-	padding: 15px;
-	background-color: green;
 }
 
-.menuitem:hover{
+.menuitem a:hover{
 	background-color: lime;
 }
 
 .menuitem a{
 	text-decoration: none;
+	background-color: green;
+	padding: 15px;
 }
 
 .content{
 	margin: 25px;
+}
+
+.loginform{
+	width: 300px;
+}
+
+.loginform input, label{
+	margin-right: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.loginform input[type="submit"]{
+	padding: 20px 40px;
+	margin-top: 20px;
+	background-color: green;
+	
+}
+
+.loginform input[type="submit"]:hover{
+	background-color: lime;
+	cursor: pointer;
 }
 
 .footerlist{

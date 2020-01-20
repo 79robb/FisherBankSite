@@ -2,11 +2,19 @@ extends layout
 
 block content
 	h1= title
-	form.loginform(name="accountlogin", method="post", action="authenticate")
+	form.loginform(name="accountlogin", method="post", action="creationauthenticate")
 		div.input
+			label.firstnamelabel First Name
+			input(type="text", name="firstName")
+			label.lastnamelabel Last Name
+			input(type="text", name="lastName")
+			label.birthlabel Date Of Birth
+			input(type="date", name="birthDate")
 			label.emaillabel Email
-			input(type="text", name="email")
+			input(type="email", name="email")
 			label.passwordlabel Password
 			input(type="password", name="password")
+			label.passwordlabel Confirm Password
+			input(type="password", name="confirmPassword")
 		div.actions
 			input(type="submit")

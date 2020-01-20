@@ -17,7 +17,7 @@ let db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, function(err) {
 });
 
 db.serialize(function() {
-	db.run("CREATE TABLE IF NOT EXISTS 'accounts' ('email' varchar(50) PRIMARY KEY NOT NULL, 'password' varchar(255) NOT NULL, 'money' INTEGER)", function(err) {
+	db.run("CREATE TABLE IF NOT EXISTS 'accounts' (email varchar(50) PRIMARY KEY NOT NULL, firstname varchar(50) NOT NULL, lastname varchar(50) NOT NULL, dateofbirth DATE NOT NULL, password varchar(255) NOT NULL, money INTEGER)", function(err) {
 		if(err) {
 			winston.error(err);
 		} else {
@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/profile', function(req, res, next) {
 	if(req.session.loggedin) {
-	res.render('profile', { title: 'req.session.name' } );
+	res.render('profile', { title: req.session.name } );
 	} else {
 		res.redirect('/login');
 	}
@@ -52,6 +52,37 @@ router.get('/login', function(req, res, next) {
 		res.redirect('/profile');
 	} else {
 		res.render('login', {title: 'Log In' } );
+	}
+});
+
+router.post('/creationauthenticate', function(req, res) {
+	var firstName = req.body.firstName;
+	var lastName = req.body.lastName;
+	var birthDate = req.body.birthDate;
+	var email = req.body.email;
+	if(req.body.password == req.body.confirmPassword){
+		var password = req.body.password;
+	} else {
+		res.render('createaccount', { title: 'Passwords do not match' } );
+		res.end();
+	}
+	
+	console.log(firstName, lastName, birthDate, email, password);
+	
+	if(firstName && lastName && birthDate && email && password) {
+		db.run("INSERT INTO accounts (email, firstname, lastname, dateofbirth, password, money) VALUES (?,?,?,?,?,?)", email, firstName, lastName, birthDate, password, 0, function(error) {
+			if(error) {
+				console.log(error);
+				winston.error(error);
+			} else {
+				req.session.loggedin = true;
+				req.session.email = email;
+				req.session.name = firstName;
+				res.redirect('/profile');
+			}
+		});
+	} else {
+		res.render('createaccount', { title: 'Please ensure all fields are filled in' } );
 	}
 });
 

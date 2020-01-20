@@ -17,7 +17,7 @@ let db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, function(err) {
 });
 
 db.serialize(function() {
-	db.run("CREATE TABLE IF NOT EXISTS 'accounts' (email varchar(50) PRIMARY KEY NOT NULL, firstname varchar(50) NOT NULL, lastname varchar(50) NOT NULL, dateofbirth DATE NOT NULL, password varchar(255) NOT NULL, money INTEGER)", function(err) {
+	db.run("CREATE TABLE IF NOT EXISTS 'accounts' (email varchar(50) PRIMARY KEY NOT NULL, firstname varchar(50) NOT NULL, lastname varchar(50) NOT NULL, dateofbirth DATE NOT NULL, password varchar(255) NOT NULL, money REAL)", function(err) {
 		if(err) {
 			winston.error(err);
 		} else {
@@ -28,12 +28,24 @@ db.serialize(function() {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	res.render('home', { title: 'Home' } );
+	if(req.session.loggedin){
+		res.render('homelogin', { title: 'Home' } );
+	} else {
+		res.render('home', { title: 'Home' } );
+	}
 });
 
 router.get('/profile', function(req, res, next) {
 	if(req.session.loggedin) {
-	res.render('profile', { title: req.session.name } );
+		var balance=0;
+		db.get("SELECT money FROM accounts WHERE email=?", req.session.email, function(error, result) {
+			if(error){
+				winston.error(error);
+				res.render('profile', { title: 'Error retrieving balance' } );
+			} else {
+				res.render('profile', { title: req.session.name, displaybalance: result.money } );
+			}
+		});
 	} else {
 		res.redirect('/login');
 	}
@@ -55,11 +67,25 @@ router.get('/login', function(req, res, next) {
 	}
 });
 
+router.get('/logout', function(req, res, next) {
+	req.session.loggedin = false;
+	req.session.email = null;
+	req.session.name = null;
+	res.redirect('/');
+});
+
 router.post('/creationauthenticate', function(req, res) {
 	var firstName = req.body.firstName;
 	var lastName = req.body.lastName;
 	var birthDate = req.body.birthDate;
 	var email = req.body.email;
+	
+	firstName = firstName.toLowerCase();
+	firstName[0] = firstName[0].toUpperCase();
+	lastName = lastName.toLowerCase();
+	lastName[0] = lastName[0].toUpperCase();
+	email = email.toLowerCase();
+	
 	if(req.body.password == req.body.confirmPassword){
 		var password = req.body.password;
 	} else {
@@ -67,13 +93,16 @@ router.post('/creationauthenticate', function(req, res) {
 		res.end();
 	}
 	
-	console.log(firstName, lastName, birthDate, email, password);
-	
 	if(firstName && lastName && birthDate && email && password) {
-		db.run("INSERT INTO accounts (email, firstname, lastname, dateofbirth, password, money) VALUES (?,?,?,?,?,?)", email, firstName, lastName, birthDate, password, 0, function(error) {
+		db.run("INSERT INTO accounts (email, firstname, lastname, dateofbirth, password, money) VALUES (?,?,?,?,?,?)", email, firstName, lastName, birthDate, password, 100.69, function(error) {
 			if(error) {
-				console.log(error);
-				winston.error(error);
+				if(error.errno == 19) {
+					winston.error(error);
+					res.render('createaccount', { title: 'Sorry, that email is already in use' } );
+				} else {
+					winston.error(error);
+					res.render('createaccount', { title: 'Sorry, there was a problem' } );
+				}
 			} else {
 				req.session.loggedin = true;
 				req.session.email = email;
@@ -89,6 +118,9 @@ router.post('/creationauthenticate', function(req, res) {
 router.post('/authenticate', function(req, res) {
 	var email = req.body.email;
 	var password = req.body.password;
+	
+	email = email.toLowerCase();
+	
 	if(email && password){
 		db.get('SELECT * FROM accounts WHERE email = ? AND password = ?', [email, password], function(error, result) {
 			//This is where the password and potentially email as well would be decrypted from the database, I might get around to that one day.
@@ -98,18 +130,35 @@ router.post('/authenticate', function(req, res) {
 				if(result) {
 					req.session.loggedin = true;
 					req.session.email = email;
-					req.session.name = result.name;
-					res.redirect('/');
+					req.session.name = result.firstname;
+					res.redirect('/profile');
 				} else {
-					res.send("Incorrect email and/or password!");
+					res.render('login', { title: 'Login details do not match' } );
 				}
 			}
 			res.end();
 		});
 	} else {
-		res.send("Please ensure all fields are filled in!");
+		res.render('login', { title: 'Please enter all details' } );
 		res.end();
 	}
+});
+
+router.post('/addmoney', function(req, res) {
+	db.get('SELECT money FROM accounts WHERE email = ?', [req.session.email], function(preerror, preresult) {
+		if(preerror) {
+			winston.error(preerror);
+		} else {
+			db.run('UPDATE accounts SET money = ? Where email = ?', [preresult.money+5, req.session.email], function(error, result) {
+				if(error) {
+					console.log(error);
+					winston.error(error);
+				} else {
+					res.render('profile', { title: '£5 added to your account', displaybalance: preresult.money+5 } );
+				}
+			});
+		}
+	});
 });
 
 module.exports = router;

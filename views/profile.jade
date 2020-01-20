@@ -1,5 +1,8 @@
-extends layout
+extends layoutloggedin
 
 block content
 	h1 Welcome #{title}
-	h3 Banking stuff happening here
+	h3 Your available balance:
+	h2 #{displaybalance} GBP
+	form.transferadd(action="addmoney", method="post")
+		input.addbutton(type="submit", name="addmoney", value="Add £5!")

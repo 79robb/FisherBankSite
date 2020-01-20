@@ -1,0 +1,20 @@
+doctype html
+html
+	head
+		title= 'Fisher Bank | ' + title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		ul.menulist
+			li.menuitem
+				a(href="/") Home
+			li.menuitem
+				a(href="/profile") Account
+			li.menuitem
+				a(href="/logout") Log Out
+		div.content
+			block content
+		ul.footerlist
+			li.footeritem
+				a(href="/") Home
+			li.footeritem
+				a(href="/logout") Log Out

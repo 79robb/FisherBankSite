@@ -43,7 +43,7 @@ router.get('/profile', function(req, res, next) {
 				winston.error(error);
 				res.render('profile', { title: 'Error retrieving balance' } );
 			} else {
-				res.render('profile', { title: req.session.name, displaybalance: result.money } );
+				res.render('profile', { title: (req.session.name).charAt(0).toUpperCase() + req.session.name.substring(1), displaybalance: result.money } );
 			}
 		});
 	} else {
@@ -81,9 +81,7 @@ router.post('/creationauthenticate', function(req, res) {
 	var email = req.body.email;
 	
 	firstName = firstName.toLowerCase();
-	firstName[0] = firstName[0].toUpperCase();
 	lastName = lastName.toLowerCase();
-	lastName[0] = lastName[0].toUpperCase();
 	email = email.toLowerCase();
 	
 	if(req.body.password == req.body.confirmPassword){
@@ -145,11 +143,11 @@ router.post('/authenticate', function(req, res) {
 });
 
 router.post('/addmoney', function(req, res) {
-	db.get('SELECT money FROM accounts WHERE email = ?', [req.session.email], function(preerror, preresult) {
+	db.get('SELECT money FROM accounts WHERE email = ?', [(req.session.email).toLowerCase()], function(preerror, preresult) {
 		if(preerror) {
 			winston.error(preerror);
 		} else {
-			db.run('UPDATE accounts SET money = ? Where email = ?', [preresult.money+5, req.session.email], function(error, result) {
+			db.run('UPDATE accounts SET money = ? Where email = ?', [preresult.money+5, (req.session.email).toLowerCase()], function(error, result) {
 				if(error) {
 					console.log(error);
 					winston.error(error);

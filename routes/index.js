@@ -26,6 +26,13 @@ db.serialize(function() {
 	});
 });
 
+router.get('/accountlist',  function(req, res, next) {
+	db.each("SELECT * FROM 'accounts'", function(error, results) {
+		console.log(results);
+	});
+	res.redirect('/');
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	if(req.session.loggedin){
@@ -37,7 +44,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/profile', function(req, res, next) {
 	if(req.session.loggedin) {
-		var balance=0;
 		db.get("SELECT money FROM accounts WHERE email=?", req.session.email, function(error, result) {
 			if(error){
 				winston.error(error);
@@ -68,6 +74,7 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next) {
+	winston.info('LOGOUT EVENT: ' + req.session.email);
 	req.session.loggedin = false;
 	req.session.email = null;
 	req.session.name = null;
@@ -129,6 +136,7 @@ router.post('/authenticate', function(req, res) {
 					req.session.loggedin = true;
 					req.session.email = email;
 					req.session.name = result.firstname;
+					winston.info('LOGIN EVENT: ' + email);
 					res.redirect('/profile');
 				} else {
 					res.render('login', { title: 'Login details do not match' } );
@@ -152,6 +160,7 @@ router.post('/addmoney', function(req, res) {
 					console.log(error);
 					winston.error(error);
 				} else {
+					winston.info('DEPOSIT EVENT: ' + req.session.email);
 					res.render('profile', { title: '£5 added to your account', displaybalance: preresult.money+5 } );
 				}
 			});

@@ -57,6 +57,10 @@ router.get('/profile', function(req, res, next) {
 	}
 });
 
+router.get('/current-account', function(req, res, next) {
+	res.render('currentaccount', { title: 'Current Account' } );
+});
+
 router.get('/create-account', function(req, res, next) {
 	if(req.session.loggedin){
 		res.redirect('/profile');

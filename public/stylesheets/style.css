@@ -2,7 +2,7 @@
 	list-style-type: none;
 	margin: 0;
 	padding: 14.5px 0;
-	background-color: #000a51;
+	background-color: #000B19;
 }
 
 .menuitem{
@@ -10,17 +10,87 @@
 }
 
 .menuitem a:hover{
-	background-color: lime;
+	background-color: #D6001C;
 }
 
 .menuitem a{
+	border-left-style: solid;
+	border-right-style: solid;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-color: black;
 	text-decoration: none;
-	background-color: green;
+	background-color: #591019;
 	padding: 15px;
 }
 
-.content{
-	margin: 25px;
+.mainContent{
+	height: auto;
+}
+
+.pagemenu{
+	list-style-type: none;
+	margin: 0;
+	margin-left: 10%;
+	padding: 0;
+	position: relative;
+	bottom: 150px;
+	width: auto;
+}
+
+.pagemenuitem{
+	display: inline-block;
+}
+
+.pagemenuitem a:hover{
+	background-color: #D6001C;
+}
+
+.pagemenuitem a{
+	text-decoration: none;
+	background-color: #591019;
+	padding: 20px;
+}
+
+.infoContent{
+	margin-left: 30%;
+	width: 40%;
+	background-color: white;
+	margin-bottom: 50px;
+}
+
+.imageleft{
+	padding: 50px;
+	border-bottom: 2px solid black;
+}
+
+.imageleft img{
+	width: 50%;
+}
+
+.floatleft{
+	width: 40%;
+	float: right;
+}
+
+.imageright{
+	clear: both;
+	padding: 50px;
+	border-bottom: 2px solid black;
+}
+
+.imageright img{
+	width: 50%;
+}
+
+.floatright{
+	width: 40%;
+	float: left;
+	margin-right: 10%;
+}
+
+.banner{
+	width: 100%;
 }
 
 .loginform{
@@ -36,12 +106,12 @@
 .loginform input[type="submit"]{
 	padding: 20px 40px;
 	margin-top: 20px;
-	background-color: green;
+	background-color: #056385;
 	
 }
 
 .loginform input[type="submit"]:hover{
-	background-color: lime;
+	background-color: #285552;
 	cursor: pointer;
 }
 
@@ -49,7 +119,7 @@
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	background-color: #000a51;
+	background-color: #000B19;
 }
 
 .footeritem{
@@ -67,5 +137,6 @@ body {
 }
 
 a {
-  color: #00B7FF;
+  color: #056385;
+  font-family: arial;
 }

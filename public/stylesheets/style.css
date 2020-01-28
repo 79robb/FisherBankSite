@@ -59,6 +59,10 @@
 	margin-bottom: 50px;
 }
 
+.clear{
+	clear: both;
+}
+
 .imageleft{
 	padding: 50px;
 	border-bottom: 2px solid black;

@@ -1,5 +1,27 @@
 extends layoutloggedin
 
 block content
-	h1 Welcome to Fisher Bank
-	h3 Banking stuff happening here
+	div.mainContent
+		img.banner("src=images/banner.jpg", alt="Banner")
+		ul.pagemenu
+			li.pagemenuitem
+				h1
+					a(href="/current-account") Our Current Account
+			li.pagemenuitem
+				h1
+					a(href="/about") About Us
+	div.infoContent
+		div.imageleft
+			img.piggybank("src=images/piggybank.jpg", alt="piggybank")
+			div.floatleft
+				h2 Savings
+				p With our savings account, you'll have too much money.
+				p Give us all your money and we'll keep it super extra safe.
+			div.clear
+		div.imageright
+			img.piggybank("src=images/mortgage.jpg", alt="mortgage")
+			div.floatright
+				h2 Mortgage
+				p Our mortgages are among the easiest to be approved for.
+				p Warning, late payments can cause serious financial difficulties. Your home may be repossessed if you are late on your payments.
+			div.clear

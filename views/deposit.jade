@@ -1,0 +1,10 @@
+extends layoutloggedin
+
+block content
+	h1 Deposit
+	form.depositform(name='deposit', method='post', action='/profile/deposit')
+		div.input
+			label.inputlabel Deposit (£)
+			input(type='number', step='0.01', max='999999.99', name='depositAmount')
+		div.actions
+			input(type='submit')

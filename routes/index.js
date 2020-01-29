@@ -6,8 +6,6 @@ var winston = require('../config/winston');
 
 const dbPath = path.resolve(__dirname, "../db/accounts.db");
 
-console.log(dbPath);
-
 let db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, function(err) {
 	if(err) {
 		winston.error(err);
@@ -57,8 +55,20 @@ router.get('/profile', function(req, res, next) {
 	}
 });
 
+router.get('/profile/deposit', function(req, res, next) {
+	if(req.session.loggedin) {
+		res.render('deposit');
+	} else {
+		res.redirect('/login');
+	}
+});
+
 router.get('/current-account', function(req, res, next) {
-	res.render('currentaccount', { title: 'Current Account' } );
+	if(req.session.loggedin){
+		res.render('currentaccountlogged', { title: 'Current Account' } );
+	} else {
+		res.render('currentaccount', { title: 'Current Account' } );
+	}
 });
 
 router.get('/create-account', function(req, res, next) {
@@ -83,6 +93,24 @@ router.get('/logout', function(req, res, next) {
 	req.session.email = null;
 	req.session.name = null;
 	res.redirect('/');
+});
+
+router.post('/profile/deposit', function(req, res, next) {
+	db.get('SELECT money FROM accounts WHERE email = ?', [(req.session.email).toLowerCase()], function(preerror, preresult) {
+		if(preerror) {
+			winston.error(preerror);
+		} else {
+			db.run('UPDATE accounts SET money = ? Where email = ?', [preresult.money+req.body.depositAmount, (req.session.email).toLowerCase()], function(error, result) {
+				if(error) {
+					console.log(error);
+					winston.error(error);
+				} else {
+					winston.info('DEPOSIT EVENT: ' + req.session.email + 'AMOUNT: ' + req.body.depositAmount);
+					res.render('profile', { title: req.body.depositAmount + ' added to your account', displaybalance: result.money } );
+				}
+			});
+		}
+	});
 });
 
 router.post('/creationauthenticate', function(req, res) {
@@ -152,24 +180,6 @@ router.post('/authenticate', function(req, res) {
 		res.render('login', { title: 'Please enter all details' } );
 		res.end();
 	}
-});
-
-router.post('/addmoney', function(req, res) {
-	db.get('SELECT money FROM accounts WHERE email = ?', [(req.session.email).toLowerCase()], function(preerror, preresult) {
-		if(preerror) {
-			winston.error(preerror);
-		} else {
-			db.run('UPDATE accounts SET money = ? Where email = ?', [preresult.money+5, (req.session.email).toLowerCase()], function(error, result) {
-				if(error) {
-					console.log(error);
-					winston.error(error);
-				} else {
-					winston.info('DEPOSIT EVENT: ' + req.session.email);
-					res.render('profile', { title: '£5 added to your account', displaybalance: preresult.money+5 } );
-				}
-			});
-		}
-	});
 });
 
 module.exports = router;

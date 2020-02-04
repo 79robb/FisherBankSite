@@ -2,6 +2,7 @@ extends layoutloggedin
 
 block content
 	h1 Deposit
+	h1 #{funderror}
 	form.depositform(name='deposit', method='post', action='/profile/deposit')
 		div.input
 			label.inputlabel Deposit (£)

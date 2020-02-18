@@ -40,6 +40,14 @@ router.get('/', function(req, res, next) {
 	}
 });
 
+router.get('/about', function(req, res, next) {
+	if(req.session.loggedin){
+		res.render('aboutlogin', { title: 'About' } );
+	} else {
+		res.render('about', { title: 'About' } );
+	}
+});
+
 router.get('/profile', function(req, res, next) {
 	if(req.session.loggedin) {
 		db.get("SELECT balance FROM accounts WHERE email=?", req.session.email, function(error, result) {
@@ -79,6 +87,14 @@ router.get('/current-account', function(req, res, next) {
 	}
 });
 
+router.get('/current-account/apply', function(req, res, next) {
+	if(req.session.loggedin){
+		res.render('currentaccountapplication', { title: 'Apply' } );
+	} else {
+		res.redirect('/');
+	}
+});
+
 router.get('/create-account', function(req, res, next) {
 	if(req.session.loggedin){
 		res.redirect('/profile');
@@ -107,6 +123,8 @@ router.post('/profile/deposit', function(req, res, next) {
 	db.get('SELECT balance FROM accounts WHERE email = ?', [(req.session.email).toLowerCase()], function(preerror, preresult) {
 		if(preerror) {
 			winston.error(preerror);
+		} else if(req.body.depositAmount < 0){
+			res.render('deposit', { funderror: "Please enter a valid amount to deposit" } );
 		} else {
 			db.run('UPDATE accounts SET balance = ? Where email = ?', [parseFloat(preresult.balance)+parseFloat(req.body.depositAmount), (req.session.email).toLowerCase()], function(error) {
 				if(error) {
